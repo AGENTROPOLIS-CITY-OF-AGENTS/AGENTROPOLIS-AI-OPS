@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentropolis.local/schemas/benchmark-registry.schema.json",
+  "title": "HERMES Benchmark Registry",
+  "description": "Exact, hardware-specific benchmark conditions. Benchmarks are hardware-specific evidence, not universal guarantees. Community claims remain UNVERIFIED until reproduced internally. Canon: docs/HERMES_EXECUTION_DISCIPLINE_AND_CONTEXT_GOVERNOR.md (Optimization profile registry).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "checkpoint",
+    "model_version",
+    "adapter_version",
+    "quantization",
+    "pruning",
+    "attention_backend",
+    "cache_method",
+    "steps",
+    "resolution",
+    "frame_count",
+    "duration",
+    "audio_mode",
+    "gpu",
+    "vram",
+    "host_ram",
+    "runtime",
+    "software_versions",
+    "measured_latency",
+    "quality_evidence",
+    "reproduced_internally",
+    "benchmark_state"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "checkpoint": { "type": "string", "minLength": 1 },
+    "model_version": { "type": "string", "minLength": 1 },
+    "adapter_version": { "type": "string", "minLength": 1 },
+    "quantization": { "type": "string", "minLength": 1 },
+    "pruning": { "type": "string", "minLength": 1 },
+    "attention_backend": { "type": "string", "minLength": 1 },
+    "cache_method": { "type": "string", "minLength": 1 },
+    "steps": { "type": "integer", "minimum": 0 },
+    "resolution": { "type": "string", "minLength": 1 },
+    "frame_count": { "type": "integer", "minimum": 0 },
+    "duration": { "type": "number", "minimum": 0 },
+    "audio_mode": { "type": "string", "minLength": 1 },
+    "gpu": { "type": "string", "minLength": 1 },
+    "vram": { "type": "number", "minimum": 0 },
+    "host_ram": { "type": "number", "minimum": 0 },
+    "runtime": { "type": "string", "minLength": 1 },
+    "software_versions": {
+      "description": "Exact software versions used for the benchmark (framework, backend, runtime).",
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "measured_latency": { "type": "number", "minimum": 0 },
+    "quality_evidence": { "type": "string", "minLength": 1 },
+    "reproduced_internally": {
+      "description": "True only when the benchmark was reproduced inside the city on the stated hardware.",
+      "type": "boolean",
+      "default": false
+    },
+    "benchmark_state": {
+      "description": "Community claims remain UNVERIFIED until reproduced internally.",
+      "enum": ["UNVERIFIED", "REPRODUCED_INTERNALLY", "VERIFIED"],
+      "default": "UNVERIFIED"
+    }
+  },
+  "allOf": [
+    {
+      "description": "A receipt that has not been reproduced internally cannot claim REPRODUCED_INTERNALLY or VERIFIED benchmark state.",
+      "if": {
+        "properties": {
+          "reproduced_internally": { "const": false }
+        }
+      },
+      "then": {
+        "properties": {
+          "benchmark_state": { "const": "UNVERIFIED" }
+        }
+      }
+    }
+  ]
+}

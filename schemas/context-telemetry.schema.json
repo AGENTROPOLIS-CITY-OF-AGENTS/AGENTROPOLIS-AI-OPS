@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentropolis.local/schemas/context-telemetry.schema.json",
+  "title": "HERMES Context Telemetry",
+  "description": "Per-task context usage and model intelligence telemetry record. The effective context budget is discovered, never assumed, and a fixed value such as 64,000 tokens must never be treated as universal. Canon: docs/HERMES_EXECUTION_DISCIPLINE_AND_CONTEXT_GOVERNOR.md (Context Floor Governor).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "model_identifier",
+    "model_provider",
+    "runtime_context_limit",
+    "advertised_context_limit",
+    "effective_context_budget",
+    "current_context_usage",
+    "output_reserve",
+    "safety_reserve",
+    "token_input",
+    "token_output",
+    "tool_call_count",
+    "tool_failure_count",
+    "retries",
+    "latency",
+    "compute_duration",
+    "provider_cost",
+    "gpu_cpu_profile",
+    "semantic_drift_score",
+    "context_churn_score",
+    "coordination_friction_score",
+    "correction_load",
+    "compression_loss",
+    "useful_work_ratio",
+    "benchmark_verification_state"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "model_identifier": { "type": "string", "minLength": 1 },
+    "model_provider": { "type": "string", "minLength": 1 },
+    "runtime_context_limit": {
+      "description": "Configured runtime context limit after provider and runtime constraints are applied.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "advertised_context_limit": {
+      "description": "Advertised model context window discovered from the model identifier and provider.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "effective_context_budget": {
+      "description": "runtime_context_limit minus system instructions, tool schemas, output reserve, safety margin, and active conversation state.",
+      "type": "integer"
+    },
+    "current_context_usage": { "type": "integer", "minimum": 0 },
+    "output_reserve": { "type": "integer", "minimum": 0 },
+    "safety_reserve": { "type": "integer", "minimum": 0 },
+    "token_input": { "type": "integer", "minimum": 0 },
+    "token_output": { "type": "integer", "minimum": 0 },
+    "tool_call_count": { "type": "integer", "minimum": 0 },
+    "tool_failure_count": { "type": "integer", "minimum": 0 },
+    "retries": { "type": "integer", "minimum": 0 },
+    "latency": { "type": "number", "minimum": 0 },
+    "compute_duration": { "type": "number", "minimum": 0 },
+    "provider_cost": { "type": "number", "minimum": 0 },
+    "gpu_cpu_profile": { "type": "string", "minLength": 1 },
+    "semantic_drift_score": { "type": "number" },
+    "context_churn_score": { "type": "number" },
+    "coordination_friction_score": { "type": "number" },
+    "correction_load": { "type": "number" },
+    "compression_loss": { "type": "number" },
+    "useful_work_ratio": { "type": "number" },
+    "benchmark_verification_state": {
+      "description": "Verification state of the benchmark evidence associated with this model; community claims remain UNVERIFIED until reproduced internally.",
+      "enum": ["UNVERIFIED", "REPRODUCED_INTERNALLY", "VERIFIED"]
+    }
+  }
+}
