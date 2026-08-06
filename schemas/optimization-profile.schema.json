@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentropolis.local/schemas/optimization-profile.schema.json",
+  "title": "HERMES Optimization Profile Registry",
+  "description": "Governed, hardware-specific optimization profiles. Canonical final output remains the comparison baseline; change one material variable at a time; benchmarks are hardware-specific evidence, not universal guarantees. Canon: docs/HERMES_EXECUTION_DISCIPLINE_AND_CONTEXT_GOVERNOR.md (Optimization profile registry).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "optimization_policy", "profiles"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "optimization_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_profile_required",
+        "change_one_variable_at_a_time",
+        "compare_against_baseline",
+        "benchmark_per_device",
+        "reject_unverified_quality_regressions"
+      ],
+      "properties": {
+        "canonical_profile_required": { "type": "boolean" },
+        "change_one_variable_at_a_time": { "type": "boolean" },
+        "compare_against_baseline": { "type": "boolean" },
+        "benchmark_per_device": { "type": "boolean" },
+        "reject_unverified_quality_regressions": { "type": "boolean" }
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/profile" }
+    },
+    "routing_receipts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/routing_receipt" }
+    }
+  },
+  "$defs": {
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile_id",
+        "profile_class",
+        "model_family",
+        "quality",
+        "speed",
+        "hardware",
+        "policy_tradeoffs",
+        "approval_state"
+      ],
+      "properties": {
+        "profile_id": { "type": "string", "minLength": 1 },
+        "profile_class": {
+          "enum": [
+            "CANONICAL_FINAL",
+            "FAST_DRAFT",
+            "PORTABLE_DRAFT",
+            "NATIVE_PREVIEW",
+            "LOW_VRAM_EXPERIMENTAL",
+            "BALANCED_LOCAL",
+            "WORKSTATION",
+            "CLOUD_FINAL"
+          ]
+        },
+        "model_family": { "type": "string", "minLength": 1 },
+        "quality": { "type": "string", "minLength": 1 },
+        "speed": { "type": "string", "minLength": 1 },
+        "hardware": { "type": "string", "minLength": 1 },
+        "policy_tradeoffs": { "type": "string", "minLength": 1 },
+        "approval_state": {
+          "enum": ["PROPOSED", "EXPERIMENTAL", "APPROVED", "RETIRED"]
+        },
+        "benchmark_state": {
+          "enum": ["UNVERIFIED", "REPRODUCED_INTERNALLY", "VERIFIED"]
+        }
+      }
+    },
+    "routing_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "routing_receipt_id",
+        "selected_profile",
+        "model_family",
+        "execution_location",
+        "effective_limits",
+        "fallback_reason",
+        "hardware_snapshot",
+        "benchmark_state",
+        "policy_state",
+        "approval_state",
+        "routed_at"
+      ],
+      "properties": {
+        "routing_receipt_id": { "type": "string", "minLength": 1 },
+        "selected_profile": { "type": "string", "minLength": 1 },
+        "model_family": { "type": "string", "minLength": 1 },
+        "execution_location": {
+          "enum": ["LOCAL", "WORKSTATION", "CLOUD", "HOSTED"]
+        },
+        "effective_limits": { "type": "string", "minLength": 1 },
+        "fallback_reason": { "type": "string" },
+        "hardware_snapshot": { "type": "string", "minLength": 1 },
+        "benchmark_state": {
+          "enum": ["UNVERIFIED", "REPRODUCED_INTERNALLY", "VERIFIED"]
+        },
+        "policy_state": { "type": "string", "minLength": 1 },
+        "approval_state": {
+          "enum": ["PENDING", "APPROVED", "DENIED"]
+        },
+        "routed_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

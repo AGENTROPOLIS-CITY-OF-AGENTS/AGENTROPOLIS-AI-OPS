@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentropolis.local/schemas/thermodynamic-metrics.schema.json",
+  "title": "HERMES Thermodynamic Metrics",
+  "description": "Operational indicators measuring the energetic cost of maintaining useful order, not merely task speed. Cross-references canon: docs/HERMES_EXECUTION_DISCIPLINE_AND_CONTEXT_GOVERNOR.md (Thermodynamic observability).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "token_energy",
+    "compute_energy",
+    "context_churn",
+    "coordination_friction",
+    "semantic_drift",
+    "memory_entropy",
+    "correction_load",
+    "compression_loss",
+    "tool_failure_heat",
+    "useful_work_ratio"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "token_energy": {
+      "description": "Tokens consumed per accepted result.",
+      "$ref": "#/$defs/measure"
+    },
+    "compute_energy": {
+      "description": "CPU, GPU, accelerator time, and energy per accepted result.",
+      "$ref": "#/$defs/measure"
+    },
+    "context_churn": {
+      "description": "Context repeatedly loaded, summarized, discarded, or retrieved without contributing to accepted output.",
+      "$ref": "#/$defs/measure"
+    },
+    "coordination_friction": {
+      "description": "Resources spent routing, reconciling, waiting on, or correcting agents.",
+      "$ref": "#/$defs/measure"
+    },
+    "semantic_drift": {
+      "description": "Deviation from the approved objective and constraints.",
+      "$ref": "#/$defs/measure"
+    },
+    "memory_entropy": {
+      "description": "Duplication, contradiction, staleness, and unresolved conflicts in memory.",
+      "$ref": "#/$defs/measure"
+    },
+    "correction_load": {
+      "description": "Rework caused by preventable errors.",
+      "$ref": "#/$defs/measure"
+    },
+    "compression_loss": {
+      "description": "Decision-relevant information lost during context compaction.",
+      "$ref": "#/$defs/measure"
+    },
+    "tool_failure_heat": {
+      "description": "Resource expenditure on failed calls and retries.",
+      "$ref": "#/$defs/measure"
+    },
+    "useful_work_ratio": {
+      "description": "Verified accepted value divided by total resource expenditure.",
+      "$ref": "#/$defs/measure"
+    }
+  },
+  "$defs": {
+    "measure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "unit", "state", "provenance"],
+      "properties": {
+        "value": { "type": "number" },
+        "unit": { "type": "string", "minLength": 1 },
+        "state": {
+          "description": "Health state of the measurement; absent measurements must be labeled UNKNOWN, never assumed.",
+          "enum": ["NOMINAL", "ELEVATED", "CRITICAL", "UNKNOWN"]
+        },
+        "provenance": {
+          "description": "Source reference for the measurement, or null when unknown.",
+          "type": ["string", "null"]
+        }
+      }
+    }
+  }
+}
