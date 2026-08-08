@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentropolis-ai-ops"
+version = "0.1.0"
+description = "Deterministic numerical telemetry, drift, entropy, and council scoring primitives for AGENTROPOLIS AI Ops."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=2.4.6,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3,<9",
+]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentropolis_ai_ops"]
